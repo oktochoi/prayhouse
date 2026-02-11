@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico, Lora, Noto_Serif_KR } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
+import { Analytics } from "@vercel/analytics/next";
 import InAppRedirect from "@/components/InAppRedirect";
 import "./globals.css";
 
@@ -73,6 +74,7 @@ export default function RootLayout({
           >
             {children}
           </div>
+          <Analytics />
         </AuthProvider>
       </body>
     </html>
