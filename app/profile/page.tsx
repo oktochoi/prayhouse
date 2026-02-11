@@ -194,7 +194,7 @@ export default function ProfilePage() {
     setProfile({
       name: updated?.name ?? data.name,
       birth_year: updated?.birth_year ?? data.birth_year,
-      church: updated?.church ?? data.church || null,
+      church: updated?.church ?? (data.church || null),
       profile_completed: true,
       is_public: updated?.is_public ?? (profile?.is_public ?? true),
     });
