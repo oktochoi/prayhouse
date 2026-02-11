@@ -9,7 +9,7 @@ import AnimatedSection from '@/components/AnimatedSection';
    Static data – placed outside the component so that
    the module is a valid client component.
    ------------------------------------------------- */
-export const values = [
+const values = [
   {
     title: '기도',
     description: '하나님과의 깊은 교제를 통해 영적 성장을 추구합니다',

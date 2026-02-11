@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://prayhouse.vercel.app/sitemap.xml
