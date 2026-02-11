@@ -4,7 +4,8 @@ import { useState } from 'react';
 
 type ProfileData = {
   name: string;
-  birth_year: number | null;
+  birth_date: string | null;
+  gender: string | null;
   church: string;
 };
 
@@ -14,11 +15,10 @@ type Props = {
   isOnboarding?: boolean;
 };
 
-const currentYear = new Date().getFullYear();
-
 export default function ProfileSetupForm({ initialData, onSubmit, isOnboarding = false }: Props) {
   const [name, setName] = useState(initialData.name);
-  const [birthYear, setBirthYear] = useState(initialData.birth_year?.toString() ?? '');
+  const [birthDate, setBirthDate] = useState(initialData.birth_date ?? '');
+  const [gender, setGender] = useState(initialData.gender ?? '');
   const [church, setChurch] = useState(initialData.church ?? '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -30,11 +30,17 @@ export default function ProfileSetupForm({ initialData, onSubmit, isOnboarding =
       setError('이름을 입력해주세요');
       return;
     }
+    const normalizedBirth = birthDate.trim().replace(/-/g, '.');
+    if (normalizedBirth && !/^\d{4}\.\d{2}\.\d{2}$/.test(normalizedBirth)) {
+      setError('출생일은 2005.09.14 형식으로 입력해주세요');
+      return;
+    }
     setLoading(true);
     try {
       await onSubmit({
         name: name.trim(),
-        birth_year: birthYear ? parseInt(birthYear, 10) : null,
+        birth_date: normalizedBirth || null,
+        gender: gender || null,
         church: church.trim(),
       });
     } catch {
@@ -68,19 +74,33 @@ export default function ProfileSetupForm({ initialData, onSubmit, isOnboarding =
       </div>
 
       <div>
-        <label htmlFor="birth_year" className="block text-sm font-medium text-stone-700 mb-2">
-          출생년도
+        <label htmlFor="birth_date" className="block text-sm font-medium text-stone-700 mb-2">
+          출생일
         </label>
         <input
-          id="birth_year"
-          type="number"
-          min={1900}
-          max={currentYear}
-          value={birthYear}
-          onChange={(e) => setBirthYear(e.target.value)}
-          placeholder={`예: ${currentYear - 30}`}
+          id="birth_date"
+          type="text"
+          value={birthDate}
+          onChange={(e) => setBirthDate(e.target.value)}
+          placeholder="예: 2005.09.14"
           className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 outline-none transition-colors"
         />
+      </div>
+
+      <div>
+        <label htmlFor="gender" className="block text-sm font-medium text-stone-700 mb-2">
+          성별
+        </label>
+        <select
+          id="gender"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 outline-none transition-colors"
+        >
+          <option value="">선택 안 함</option>
+          <option value="남자">남자</option>
+          <option value="여자">여자</option>
+        </select>
       </div>
 
       <div>

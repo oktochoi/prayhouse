@@ -12,7 +12,8 @@ import ProfileSetupForm from '@/components/ProfileSetupForm';
 
 type Profile = {
   name: string;
-  birth_year: number | null;
+  birth_date: string | null;
+  gender: string | null;
   church: string | null;
   profile_completed: boolean;
   is_public: boolean;
@@ -55,7 +56,7 @@ export default function ProfilePage() {
       const supabase = createClient();
       const { data, error } = await supabase
         .from('profiles')
-        .select('name, birth_year, church, profile_completed, is_public')
+        .select('name, birth_date, gender, church, profile_completed, is_public')
         .eq('id', userId)
         .single();
 
@@ -63,7 +64,8 @@ export default function ProfilePage() {
         const fallbackProfile = {
           id: userId,
           name: userData?.name ?? '사용자',
-          birth_year: null,
+          birth_date: null,
+          gender: null,
           church: null,
           profile_completed: true,
           is_public: true,
@@ -71,7 +73,8 @@ export default function ProfilePage() {
         await supabase.from('profiles').upsert(fallbackProfile, { onConflict: 'id' });
         setProfile({
           name: fallbackProfile.name,
-          birth_year: fallbackProfile.birth_year,
+          birth_date: fallbackProfile.birth_date,
+          gender: fallbackProfile.gender,
           church: fallbackProfile.church,
           profile_completed: true,
           is_public: true,
@@ -89,7 +92,8 @@ export default function ProfilePage() {
 
       setProfile({
         name: data.name ?? '사용자',
-        birth_year: data.birth_year ?? null,
+        birth_date: data.birth_date ?? null,
+        gender: data.gender ?? null,
         church: data.church ?? null,
         profile_completed: true,
         is_public: resolvedIsPublic,
@@ -165,7 +169,8 @@ export default function ProfilePage() {
 
   const handleProfileSubmit = async (data: {
     name: string;
-    birth_year: number | null;
+    birth_date: string | null;
+    gender: string | null;
     church: string;
   }) => {
     if (!userData?.id) return;
@@ -176,14 +181,15 @@ export default function ProfilePage() {
         {
           id: userData.id,
           name: data.name,
-          birth_year: data.birth_year,
+          birth_date: data.birth_date,
+          gender: data.gender,
           church: data.church || null,
           profile_completed: true,
           is_public: profile?.is_public ?? true,
         },
         { onConflict: 'id' }
       )
-      .select('name, birth_year, church, profile_completed, is_public')
+      .select('name, birth_date, gender, church, profile_completed, is_public')
       .single();
 
     if (error) {
@@ -193,7 +199,8 @@ export default function ProfilePage() {
 
     setProfile({
       name: updated?.name ?? data.name,
-      birth_year: updated?.birth_year ?? data.birth_year,
+      birth_date: updated?.birth_date ?? data.birth_date,
+      gender: updated?.gender ?? data.gender,
       church: updated?.church ?? (data.church || null),
       profile_completed: true,
       is_public: updated?.is_public ?? (profile?.is_public ?? true),
@@ -265,7 +272,8 @@ export default function ProfilePage() {
           <ProfileSetupForm
             initialData={{
               name: profile?.name ?? userData.name,
-              birth_year: profile?.birth_year ?? null,
+              birth_date: profile?.birth_date ?? null,
+              gender: profile?.gender ?? null,
               church: profile?.church ?? '',
             }}
             onSubmit={handleProfileSubmit}
@@ -298,9 +306,14 @@ export default function ProfilePage() {
                 {profile?.church && (
                   <p className="text-base font-light text-stone-400">출석 교회: {profile.church}</p>
                 )}
-                {profile?.birth_year && (
+                {profile?.birth_date && (
                   <p className="text-base font-light text-stone-400">
-                    출생년도: {profile.birth_year}년
+                    출생일: {profile.birth_date}
+                  </p>
+                )}
+                {profile?.gender && (
+                  <p className="text-base font-light text-stone-400">
+                    성별: {profile.gender}
                   </p>
                 )}
               </div>
@@ -322,7 +335,8 @@ export default function ProfilePage() {
               <ProfileSetupForm
                 initialData={{
                   name: profile.name,
-                  birth_year: profile.birth_year,
+                  birth_date: profile.birth_date,
+                  gender: profile.gender,
                   church: profile.church ?? '',
                 }}
                 onSubmit={handleProfileSubmit}
