@@ -286,16 +286,7 @@ export default function ProfilePage() {
                 )}
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <button
-                  onClick={handleTogglePublic}
-                  className={`text-sm font-medium border px-4 py-2 rounded-lg transition-colors ${
-                    isProfilePublic
-                      ? 'text-amber-700 border-amber-200 bg-amber-50'
-                      : 'text-stone-600 border-stone-200 bg-white'
-                  }`}
-                >
-                  {isProfilePublic ? '공개' : '비공개'}
-                </button>
+
                 <button
                   onClick={() => setShowEditForm(true)}
                   className="text-sm font-medium text-stone-500 hover:text-stone-700 border border-stone-200 hover:border-stone-300 px-4 py-2 rounded-lg transition-colors"
