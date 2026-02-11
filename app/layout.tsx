@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico, Lora, Noto_Serif_KR } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
+import InAppRedirect from "@/components/InAppRedirect";
 import "./globals.css";
 
 const lora = Lora({
@@ -38,6 +39,13 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://prayhouse.vercel.app"),
   title: "감사일기 · 선교일기 · 기도제목 | 기도의 집",
   description: "감사일기, 선교일기, 기도제목을 함께 나누는 기도의 집입니다.",
+  openGraph: {
+    images: ["/og.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og.png"],
+  },
   verification: {
     google: "4j3cTkVACL2lF9s0CFfg6x9kHsVdndQdbKI5atxdBGQ",
   },
@@ -54,6 +62,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} ${lora.variable} ${notoSerifKr.variable} antialiased`}
       >
         <AuthProvider>
+          <InAppRedirect />
           <div
             className="min-h-screen bg-[#f8f6f2]"
             style={{
