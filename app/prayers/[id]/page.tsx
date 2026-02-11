@@ -25,11 +25,6 @@ export default async function PrayerDetailPage({ params }: { params: Promise<{ i
     .select('*', { count: 'exact', head: true })
     .eq('prayer_id', id);
 
-  const { data: comments } = await supabase
-    .from('prayer_comments')
-    .select('*')
-    .eq('prayer_id', id)
-    .order('created_at', { ascending: true });
 
   const prayerData = {
     id: prayer.id,
@@ -48,23 +43,10 @@ export default async function PrayerDetailPage({ params }: { params: Promise<{ i
     status: prayer.status,
   };
 
-  const commentsData = (comments || []).map((c) => ({
-    id: c.id,
-    userId: c.user_id,
-    author: c.author_name || '익명',
-    date: new Date(c.created_at).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }),
-    content: c.content,
-  }));
-
   return (
     <PrayerDetailClient
       prayerId={id}
       initialPrayer={prayerData}
-      initialComments={commentsData}
     />
   );
 }

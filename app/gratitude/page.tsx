@@ -24,16 +24,6 @@ export default function GratitudeMainPage() {
 
           <div className="space-y-4 sm:space-y-6">
             <Link
-              href="/gratitude/mine"
-              className="flex items-center justify-between w-full px-6 py-5 sm:py-6 bg-white/90 rounded-2xl border border-stone-100 shadow-sm hover:shadow-lg hover:border-amber-100 hover:bg-amber-50/30 transition-all duration-300 group"
-            >
-              <span className="text-base sm:text-lg font-light text-stone-800 group-hover:text-amber-800">
-                내 감사일기 쓰기
-              </span>
-              <i className="ri-quill-pen-line text-2xl text-amber-500/70 group-hover:text-amber-600" />
-            </Link>
-
-            <Link
               href="/gratitude/others"
               className="flex items-center justify-between w-full px-6 py-5 sm:py-6 bg-white/90 rounded-2xl border border-stone-100 shadow-sm hover:shadow-lg hover:border-amber-100 hover:bg-amber-50/30 transition-all duration-300 group"
             >

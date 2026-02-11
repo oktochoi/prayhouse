@@ -595,7 +595,6 @@ export default function SupportPageClient({ params }: SupportPageClientProps) {
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        onLogin={() => {}}
       />
     </>
   );

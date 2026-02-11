@@ -16,10 +16,6 @@ import { createClient } from '@/utils/supabase/client';
 import { requireLogin } from '@/lib/auth';
 import Link from 'next/link';
 
-function formatDateKey(d: Date): string {
-  return d.toISOString().slice(0, 10);
-}
-
 function formatDisplayDate(dateStr: string): string {
   const d = new Date(dateStr + 'T12:00:00');
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
@@ -136,19 +132,6 @@ export default function MyGratitudePage() {
   };
 
   const entrySet = useMemo(() => new Set(datesWithEntries), [datesWithEntries]);
-
-  const getStreakLength = useCallback(
-    (dateKey: string) => {
-      let count = 0;
-      const cursor = new Date(dateKey + 'T12:00:00');
-      while (entrySet.has(getLocalDateKey(cursor))) {
-        count += 1;
-        cursor.setDate(cursor.getDate() - 1);
-      }
-      return count;
-    },
-    [entrySet]
-  );
 
   const monthDateKeys = useMemo(() => {
     const keys: string[] = [];
@@ -330,7 +313,6 @@ export default function MyGratitudePage() {
                   const hasEntry = entrySet.has(dateKey);
                   const isSelected = selectedDate === dateKey;
                   const isToday = dateKey === todayKey;
-                  const streak = hasEntry ? getStreakLength(dateKey) : 0;
                   const prevDate = new Date(dateKey + 'T12:00:00');
                   prevDate.setDate(prevDate.getDate() - 1);
                   const hasPrev = entrySet.has(getLocalDateKey(prevDate));

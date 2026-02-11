@@ -37,7 +37,6 @@ export default function MissionDailyReportClient({ params }: MissionDailyReportC
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [newEntry, setNewEntry] = useState({
@@ -121,18 +120,6 @@ export default function MissionDailyReportClient({ params }: MissionDailyReportC
       </main>
     );
   }
-
-  const nextImage = () => {
-    const images = missionReport?.images ?? [];
-    if (images.length === 0) return;
-    setCurrentImageIndex((prev) => (prev >= images.length - 1 ? 0 : prev + 1));
-  };
-
-  const prevImage = () => {
-    const images = missionReport?.images ?? [];
-    if (images.length === 0) return;
-    setCurrentImageIndex((prev) => (prev <= 0 ? images.length - 1 : prev - 1));
-  };
 
   const handleAddEntry = () => {
     const loginCheck = requireLogin(userData);
@@ -813,7 +800,6 @@ export default function MissionDailyReportClient({ params }: MissionDailyReportC
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        onLogin={() => {}}
       />
     </>
   );

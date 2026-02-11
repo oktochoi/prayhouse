@@ -71,19 +71,14 @@ export default function OthersGratitudePage() {
               <p className="text-sm text-stone-400">
                 내 감사일기에서 공개로 설정하면 여기에서 볼 수 있습니다.
               </p>
-              <Link
-                href="/gratitude/mine"
-                className="mt-4 inline-block text-amber-600 hover:text-amber-700 font-medium text-sm"
-              >
-                내 감사일기 쓰기 →
-              </Link>
             </div>
           ) : (
             <div className="space-y-6 sm:space-y-8">
               {entries.map((entry) => (
-                <article
+                <Link
                   key={entry.id}
-                  className="bg-white/80 rounded-2xl border border-stone-100 p-6 sm:p-8"
+                  href={`/gratitude/${entry.id}`}
+                  className="block bg-white/80 rounded-2xl border border-stone-100 p-6 sm:p-8 hover:border-amber-100 hover:shadow-sm transition-all"
                 >
                   <p className="font-lora text-base sm:text-lg text-stone-700 leading-relaxed mb-6">
                     {entry.text}
@@ -91,7 +86,10 @@ export default function OthersGratitudePage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-stone-400">{formatDisplayDate(entry.date)}</span>
                     <button
-                      onClick={() => handleEmpathy(entry)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleEmpathy(entry);
+                      }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-light transition-colors ${
                         entry.user_empathized
                           ? 'bg-amber-50 text-amber-700 border border-amber-200'
@@ -106,7 +104,7 @@ export default function OthersGratitudePage() {
                       <span>{entry.empathy_count > 0 ? entry.empathy_count : '공감'}</span>
                     </button>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           )}

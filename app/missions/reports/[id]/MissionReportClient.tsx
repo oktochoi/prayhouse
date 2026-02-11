@@ -77,6 +77,24 @@ export default function MissionReportClient({ reportId }: MissionReportClientPro
   const isOwner = userData?.id === mission.user_id;
   const ended = isMissionEnded(mission.end_date);
 
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: mission.title,
+          url: shareUrl,
+        });
+        return;
+      }
+      await navigator.clipboard.writeText(shareUrl);
+      alert('공유 링크를 복사했어요.');
+    } catch (error) {
+      console.error(error);
+      alert('공유에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+    }
+  };
+
   const handleDeleteMission = async () => {
     if (!isOwner) return;
     if (!confirm('정말로 이 선교 일기서를 삭제하시겠습니까?')) return;
@@ -108,29 +126,38 @@ export default function MissionReportClient({ reportId }: MissionReportClientPro
                   <p className="text-[10px] sm:text-xs text-stone-400 tracking-widest uppercase">
                     {location}
                   </p>
-                  {isOwner && (
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/missions/reports/${reportId}/daily`}
-                        className="px-3 py-1.5 text-xs text-white bg-amber-600 hover:bg-amber-700 transition-colors"
-                      >
-                        일기 작성
-                      </Link>
-                      <Link
-                        href={`/missions/new?edit=${mission.id}`}
-                        className="px-3 py-1.5 text-xs text-stone-700 bg-stone-100 hover:bg-stone-200 transition-colors"
-                      >
-                        수정
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={handleDeleteMission}
-                        className="px-3 py-1.5 text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      className="px-3 py-1.5 text-xs text-stone-700 bg-white border border-stone-200 hover:border-amber-200 hover:text-amber-700 transition-colors"
+                    >
+                      공유
+                    </button>
+                    {isOwner && (
+                      <>
+                        <Link
+                          href={`/missions/reports/${reportId}/daily`}
+                          className="px-3 py-1.5 text-xs text-white bg-amber-600 hover:bg-amber-700 transition-colors"
+                        >
+                          일기 작성
+                        </Link>
+                        <Link
+                          href={`/missions/new?edit=${mission.id}`}
+                          className="px-3 py-1.5 text-xs text-stone-700 bg-stone-100 hover:bg-stone-200 transition-colors"
+                        >
+                          수정
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={handleDeleteMission}
+                          className="px-3 py-1.5 text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors"
+                        >
+                          삭제
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
                 {ended && (
                   <div className="inline-flex items-center px-2.5 py-1 text-[11px] tracking-wide text-stone-600 bg-stone-100 border border-stone-200 rounded-full mb-4">

@@ -901,7 +901,7 @@ export default function NewMissionReportPage() {
                         <li>업로드한 사진은 보고서 썸네일과 갤러리에서 사용됩니다</li>
                         <li>보고서 생성 후 언제든지 새로운 날의 기록을 추가할 수 있습니다</li>
                         <li>개인정보나 현지 상황에 민감한 정보는 포함하지 말아주세요</li>
-                        <li>긴급한 기도나 후원이 필요한 경우 우선순위를 '긴급'으로 설정해주세요</li>
+                        <li>긴급한 기도나 후원이 필요한 경우 우선순위를 “긴급”으로 설정해주세요</li>
                         <li>
                           <span className="font-semibold text-stone-800">후원 설정 시 투명한 사용 내역을 제공하여 신뢰를 구축하세요</span>
                         </li>
@@ -952,7 +952,6 @@ export default function NewMissionReportPage() {
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => router.push('/missions')}
-        onLogin={() => {}}
       />
     </>
   );

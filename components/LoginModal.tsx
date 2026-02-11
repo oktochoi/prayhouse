@@ -6,10 +6,9 @@ import { createClient } from '@/utils/supabase/client';
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (userData: { id: string; name: string; email?: string }) => void;
 }
 
-export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = async () => {

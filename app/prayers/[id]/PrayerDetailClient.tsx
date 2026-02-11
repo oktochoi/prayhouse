@@ -21,32 +21,19 @@ type PrayerData = {
   status: string;
 };
 
-type CommentData = {
-  id: string;
-  userId: string;
-  author: string;
-  date: string;
-  content: string;
-};
-
 type Props = {
   prayerId: string;
   initialPrayer: PrayerData;
-  initialComments: CommentData[];
 };
 
 export default function PrayerDetailClient({
   prayerId,
   initialPrayer,
-  initialComments,
 }: Props) {
   const { userData } = useAuth();
   const router = useRouter();
   const [prayer, setPrayer] = useState(initialPrayer);
-  const [comments, setComments] = useState(initialComments);
   const [hasPrayed, setHasPrayed] = useState(false);
-  const [commentText, setCommentText] = useState('');
-  const [submittingComment, setSubmittingComment] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     title: initialPrayer.title,
@@ -109,57 +96,6 @@ export default function PrayerDetailClient({
     }
   };
 
-  const handleSubmitComment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userData || !commentText.trim()) return;
-    setSubmittingComment(true);
-    const supabase = createClient();
-    const { data } = await supabase
-      .from('prayer_comments')
-      .insert({
-        prayer_id: prayerId,
-        user_id: userData.id,
-        content: commentText.trim(),
-        author_name: userData.name,
-      })
-      .select()
-      .single();
-
-    if (data) {
-      setComments((prev) => [
-        ...prev,
-        {
-          id: data.id,
-          userId: data.user_id,
-          author: data.author_name || userData.name,
-          date: new Date(data.created_at).toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }),
-          content: data.content,
-        },
-      ]);
-      setCommentText('');
-    }
-    setSubmittingComment(false);
-  };
-
-  const handleDeleteComment = async (commentId: string) => {
-    if (!userData) return;
-    if (!confirm('이 댓글을 삭제하시겠습니까?')) return;
-    const supabase = createClient();
-    const { error } = await supabase
-      .from('prayer_comments')
-      .delete()
-      .eq('id', commentId)
-      .eq('user_id', userData.id);
-    if (error) {
-      alert(error.message);
-      return;
-    }
-    setComments((prev) => prev.filter((c) => c.id !== commentId));
-  };
 
   const isOwner = userData?.id === prayer.userId;
 

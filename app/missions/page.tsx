@@ -250,7 +250,6 @@ export default function MissionsPage() {
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        onLogin={() => {}}
       />
 
       {showAccountModal && selectedMission && selectedMission.account_number && (

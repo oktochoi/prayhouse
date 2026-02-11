@@ -287,7 +287,7 @@ export default function NewPrayerPage() {
                         <li>등록된 기도 제목은 모든 회원이 볼 수 있습니다</li>
                         <li>개인정보나 민감한 내용은 포함하지 말아주세요</li>
                         <li>서로를 격려하고 위로하는 내용으로 작성해주세요</li>
-                        <li>긴급한 기도가 필요한 경우 우선순위를 '긴급'으로 설정해주세요</li>
+                        <li>긴급한 기도가 필요한 경우 우선순위를 “긴급”으로 설정해주세요</li>
                       </ul>
                     </div>
                   </div>
@@ -329,7 +329,6 @@ export default function NewPrayerPage() {
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => window.location.href = '/prayers'}
-        onLogin={() => {}}
       />
     </>
   );

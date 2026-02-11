@@ -39,7 +39,6 @@ export default function ProfilePage() {
   const router = useRouter();
   const { userData, signOut, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [profileLoading, setProfileLoading] = useState(true);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState('');
@@ -47,7 +46,6 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'prayers' | 'gratitude' | 'posts'>('prayers');
   const [myPrayers, setMyPrayers] = useState<MyPrayer[]>([]);
   const [prayerLoading, setPrayerLoading] = useState(true);
-  const [gratitudeDates, setGratitudeDates] = useState<string[]>([]);
   const [gratitudeStreak, setGratitudeStreak] = useState(0);
 
   useEffect(() => {
@@ -69,7 +67,6 @@ export default function ProfilePage() {
           profile_completed: true,
           is_public: true,
         });
-        setProfileLoading(false);
         return;
       }
 
@@ -88,7 +85,6 @@ export default function ProfilePage() {
         profile_completed: true,
         is_public: resolvedIsPublic,
       });
-      setProfileLoading(false);
     }
     fetchProfile();
   }, [userData?.id, userData?.name]);
@@ -99,7 +95,6 @@ export default function ProfilePage() {
     const safeUserId: string = userId;
     async function fetchGratitudeDates() {
       const dates = await getMyDatesWithEntries(safeUserId);
-      setGratitudeDates(dates);
       if (!dates.length) {
         setGratitudeStreak(0);
         return;
@@ -291,7 +286,16 @@ export default function ProfilePage() {
                 )}
               </div>
               <div className="flex items-center gap-3 shrink-0">
-
+                <button
+                  onClick={handleTogglePublic}
+                  className={`text-sm font-medium border px-4 py-2 rounded-lg transition-colors ${
+                    isProfilePublic
+                      ? 'text-amber-700 border-amber-200 bg-amber-50'
+                      : 'text-stone-600 border-stone-200 bg-white'
+                  }`}
+                >
+                  {isProfilePublic ? '공개' : '비공개'}
+                </button>
                 <button
                   onClick={() => setShowEditForm(true)}
                   className="text-sm font-medium text-stone-500 hover:text-stone-700 border border-stone-200 hover:border-stone-300 px-4 py-2 rounded-lg transition-colors"
