@@ -96,13 +96,13 @@ export default function HeroSection() {
         </div>
 
         {/* Below buttons - Small subtle text */}
-        <p
+        {/* <p
           className={`text-xs sm:text-sm text-stone-400/90 ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-600 delay-500`}
         >
           {todayCount !== null
             ? `오늘 ${todayCount}명이 이곳에서 기도했습니다`
             : '오늘 이곳에서 기도가 이어지고 있습니다'}
-        </p>
+        </p> */}
       </div>
     </section>
   );
