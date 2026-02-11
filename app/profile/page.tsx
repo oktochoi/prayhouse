@@ -417,8 +417,6 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex items-center gap-6 text-sm font-light text-stone-400">
                       <span>{prayer.date}</span>
-                      <span>·</span>
-                      <span>{prayer.prayerCount}명이 함께 기도</span>
                     </div>
                   </Link>
                 ))

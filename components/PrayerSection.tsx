@@ -160,10 +160,6 @@ export default function PrayerSection() {
                     </div>
 
                     <div className="flex items-center justify-between sm:justify-end gap-4">
-                      <div className="flex items-center gap-2 text-stone-400">
-                        <i className="ri-hand-heart-line text-base text-amber-500"></i>
-                        <span className="text-sm font-medium">{prayer.prayerCount}명</span>
-                      </div>
                       <Link
                         href={`/prayers/${prayer.id}`}
                         className="px-5 sm:px-6 py-2.5 bg-stone-800 text-white text-sm font-medium rounded-full hover:bg-stone-700 transition-all duration-300 whitespace-nowrap cursor-pointer"

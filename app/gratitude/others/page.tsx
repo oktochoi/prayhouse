@@ -101,7 +101,7 @@ export default function OthersGratitudePage() {
                       <i
                         className={`ri-heart-${entry.user_empathized ? 'fill' : 'line'} text-sm`}
                       />
-                      <span>{entry.empathy_count > 0 ? entry.empathy_count : '공감'}</span>
+                      <span>공감</span>
                     </button>
                   </div>
                 </Link>

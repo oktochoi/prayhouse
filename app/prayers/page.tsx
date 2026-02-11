@@ -214,8 +214,8 @@ function PrayersPageContent() {
                       <span className="hidden sm:inline">·</span>
                       <span className="flex items-center gap-1">
                         <i className="ri-hand-heart-line text-amber-500"></i>
-                        <span className="hidden sm:inline">{prayer.prayerCount}명이 함께 기도</span>
-                        <span className="sm:hidden">{prayer.prayerCount}</span>
+                        <span className="hidden sm:inline">함께 기도</span>
+                        <span className="sm:hidden">기도</span>
                       </span>
                     </div>
                   </div>

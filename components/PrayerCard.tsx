@@ -44,7 +44,7 @@ export default function PrayerCard({ prayer }: PrayerCardProps) {
         {prayer.content}
       </p>
 
-      <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between">
         <div className="space-y-1.5">
           <p className="text-sm text-stone-500 font-light">
             {prayer.author}
@@ -53,12 +53,8 @@ export default function PrayerCard({ prayer }: PrayerCardProps) {
             {prayer.date}
           </p>
         </div>
-        
+
         <div className="flex items-center gap-8">
-          <span className="text-[11px] text-stone-300 font-light tracking-wide">
-            <span className="text-stone-400">{prayer.prayerCount}</span>
-            명이 함께 기도
-          </span>
           <Link
             href={`/prayers/${prayer.id}`}
             className="text-sm text-stone-500 hover:text-stone-700 transition-colors duration-500 border-b border-stone-200 hover:border-stone-500 pb-0.5 font-light"

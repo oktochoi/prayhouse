@@ -292,10 +292,6 @@ export default function PrayerDetailClient({
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6 sm:py-8 border-y border-stone-100">
-              <div className="text-sm font-light text-stone-500">
-                {prayer.prayerCount}명이 함께 기도하고 있습니다
-              </div>
-
               <button
                 onClick={handlePray}
                 className={`px-6 py-2.5 text-sm font-light transition-colors whitespace-nowrap cursor-pointer ${
