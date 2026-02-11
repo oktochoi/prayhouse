@@ -60,10 +60,19 @@ export default function ProfilePage() {
         .single();
 
       if (!data || error) {
-        setProfile({
+        const fallbackProfile = {
+          id: userId,
           name: userData?.name ?? '사용자',
           birth_year: null,
           church: null,
+          profile_completed: true,
+          is_public: true,
+        };
+        await supabase.from('profiles').upsert(fallbackProfile, { onConflict: 'id' });
+        setProfile({
+          name: fallbackProfile.name,
+          birth_year: fallbackProfile.birth_year,
+          church: fallbackProfile.church,
           profile_completed: true,
           is_public: true,
         });
@@ -161,23 +170,33 @@ export default function ProfilePage() {
   }) => {
     if (!userData?.id) return;
     const supabase = createClient();
-    await supabase
+    const { data: updated, error } = await supabase
       .from('profiles')
-      .update({
-        name: data.name,
-        birth_year: data.birth_year,
-        church: data.church || null,
-        profile_completed: true,
-        is_public: profile?.is_public ?? true,
-      })
-      .eq('id', userData.id);
+      .upsert(
+        {
+          id: userData.id,
+          name: data.name,
+          birth_year: data.birth_year,
+          church: data.church || null,
+          profile_completed: true,
+          is_public: profile?.is_public ?? true,
+        },
+        { onConflict: 'id' }
+      )
+      .select('name, birth_year, church, profile_completed, is_public')
+      .single();
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
     setProfile({
-      ...profile!,
-      name: data.name,
-      birth_year: data.birth_year,
-      church: data.church || null,
+      name: updated?.name ?? data.name,
+      birth_year: updated?.birth_year ?? data.birth_year,
+      church: updated?.church ?? data.church || null,
       profile_completed: true,
-      is_public: profile?.is_public ?? true,
+      is_public: updated?.is_public ?? (profile?.is_public ?? true),
     });
     setShowEditForm(false);
   };
