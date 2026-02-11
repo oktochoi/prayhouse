@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
+import InAppRedirect from './InAppRedirect';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -34,7 +35,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <>
+      <InAppRedirect />
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl">
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -79,6 +82,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           취소
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

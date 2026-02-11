@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico, Lora, Noto_Serif_KR } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Analytics } from "@vercel/analytics/next";
-import InAppRedirect from "@/components/InAppRedirect";
 import "./globals.css";
 
 const lora = Lora({
@@ -63,7 +62,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} ${lora.variable} ${notoSerifKr.variable} antialiased`}
       >
         <AuthProvider>
-          <InAppRedirect />
           <div
             className="min-h-screen bg-[#f8f6f2]"
             style={{
