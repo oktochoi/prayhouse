@@ -1,0 +1,6 @@
+-- Supabase Storage: mission-images 버킷
+-- Dashboard > Storage > New bucket에서 생성하세요:
+--   - Name: mission-images
+--   - Public bucket: ON (체크)
+--   - File size limit: 5MB
+--   - Allowed MIME types: image/webp
