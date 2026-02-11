@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { createClient } from '@/utils/supabase/client';
+import LoginModal from '@/components/LoginModal';
+import { useAuth } from '@/components/AuthProvider';
 
 type PrayerItem = {
   id: string;
@@ -25,6 +27,8 @@ function formatDateKr(dateStr: string) {
 
 function PrayersPageContent() {
   const searchParams = useSearchParams();
+  const { userData, loading: authLoading } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const filterParam = searchParams.get('filter');
   const initialFilter = useMemo(() => {
     if (filterParam === 'active' || filterParam === 'answered') return filterParam;
@@ -142,7 +146,18 @@ function PrayersPageContent() {
 
             <Link
               href="/prayers/new"
-              className="text-sm font-medium text-amber-700 hover:text-amber-800 transition-colors border-b border-amber-500 hover:border-amber-700 cursor-pointer self-start sm:self-auto"
+              className={`text-sm font-medium transition-colors border-b cursor-pointer self-start sm:self-auto ${
+                !authLoading && userData
+                  ? 'text-amber-700 hover:text-amber-800 border-amber-500 hover:border-amber-700'
+                  : 'text-stone-400 border-stone-300 hover:text-amber-700 hover:border-amber-500'
+              }`}
+              onClick={(e) => {
+                if (authLoading) return;
+                if (!userData) {
+                  e.preventDefault();
+                  setShowLoginModal(true);
+                }
+              }}
             >
               기도 제목 올리기
             </Link>
@@ -153,7 +168,17 @@ function PrayersPageContent() {
           ) : filtered.length === 0 ? (
             <div className="py-16 text-center text-stone-500">
               <p className="mb-4">등록된 기도 제목이 없습니다.</p>
-              <Link href="/prayers/new" className="text-amber-600 hover:text-amber-700 font-medium">
+              <Link
+                href="/prayers/new"
+                className="text-amber-600 hover:text-amber-700 font-medium"
+                onClick={(e) => {
+                  if (authLoading) return;
+                  if (!userData) {
+                    e.preventDefault();
+                    setShowLoginModal(true);
+                  }
+                }}
+              >
                 첫 번째 기도 제목을 등록해보세요 →
               </Link>
             </div>
@@ -202,6 +227,11 @@ function PrayersPageContent() {
       </main>
 
       <Footer />
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        redirectPath="/prayers/new"
+      />
     </div>
   );
 }

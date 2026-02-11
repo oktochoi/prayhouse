@@ -15,6 +15,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { createClient } from '@/utils/supabase/client';
 import { requireLogin } from '@/lib/auth';
 import Link from 'next/link';
+import LoginModal from '@/components/LoginModal';
 
 function formatDisplayDate(dateStr: string): string {
   const d = new Date(dateStr + 'T12:00:00');
@@ -47,6 +48,7 @@ export default function MyGratitudePage() {
   const [prayers, setPrayers] = useState<{ id: string; title: string }[]>([]);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const loadData = useCallback(async () => {
     if (!userData?.id) return;
@@ -224,14 +226,26 @@ export default function MyGratitudePage() {
         <Header />
         <main className="pt-20 max-w-2xl mx-auto px-6 py-16 text-center">
           <p className="text-stone-600 font-light mb-6">감사일기를 작성하려면 로그인해 주세요.</p>
+          <button
+            type="button"
+            onClick={() => setShowLoginModal(true)}
+            className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-amber-500 text-white text-sm font-medium hover:bg-amber-600 transition-colors"
+          >
+            로그인하기
+          </button>
           <Link
             href="/gratitude"
-            className="text-amber-600 hover:text-amber-700 font-medium text-sm"
+            className="mt-4 ml-4 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-white text-amber-700 text-sm font-medium border border-amber-200 hover:border-amber-300 hover:bg-amber-50 transition-colors"
           >
-            감사일기 메인으로
+            메인으로
           </Link>
         </main>
         <Footer />
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          redirectPath="/gratitude/mine"
+        />
       </div>
     );
   }
