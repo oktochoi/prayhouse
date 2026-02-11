@@ -38,7 +38,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://prayhouse.vercel.app"),
-  title: "감사일기 · 선교일기 · 기도제목 | 기도의 집",
+  title: "기도의 집",
   description: "감사일기, 선교일기, 기도제목을 함께 나누는 기도의 집입니다.",
   openGraph: {
     images: ["/og.png"],
