@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
@@ -14,7 +14,7 @@ import { createClient } from '@/utils/supabase/client';
 import { processImagesToWebP } from '@/lib/image-utils';
 import { MISSION_IMAGES_BUCKET, MAX_IMAGES_PER_POST } from '@/lib/missions';
 
-export default function NewMissionReportPage() {
+function NewMissionReportPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit');
@@ -954,5 +954,21 @@ export default function NewMissionReportPage() {
         onClose={() => router.push('/missions')}
       />
     </>
+  );
+}
+
+export default function NewMissionReportPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#f8f6f2]">
+          <Header />
+          <div className="py-16 text-center text-stone-500 text-sm">불러오는 중...</div>
+          <Footer />
+        </div>
+      }
+    >
+      <NewMissionReportPageContent />
+    </Suspense>
   );
 }

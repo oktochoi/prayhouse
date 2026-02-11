@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
@@ -23,7 +23,7 @@ function formatDateKr(dateStr: string) {
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
 }
 
-export default function PrayersPage() {
+function PrayersPageContent() {
   const searchParams = useSearchParams();
   const filterParam = searchParams.get('filter');
   const initialFilter = useMemo(() => {
@@ -203,5 +203,21 @@ export default function PrayersPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function PrayersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-b from-amber-50/20 via-amber-50/10 to-stone-50">
+          <Header />
+          <div className="py-16 text-center text-stone-500 text-sm">불러오는 중...</div>
+          <Footer />
+        </div>
+      }
+    >
+      <PrayersPageContent />
+    </Suspense>
   );
 }
