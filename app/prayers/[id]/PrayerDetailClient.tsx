@@ -19,6 +19,15 @@ type PrayerData = {
   date: string;
   prayerCount: number;
   status: string;
+  allowComments: boolean;
+};
+
+type PrayerComment = {
+  id: string;
+  userId: string;
+  author: string;
+  date: string;
+  content: string;
 };
 
 type Props = {
@@ -41,7 +50,11 @@ export default function PrayerDetailClient({
     category: initialPrayer.category,
     priority: initialPrayer.priority,
     status: initialPrayer.status,
+    allowComments: initialPrayer.allowComments,
   });
+  const [comments, setComments] = useState<PrayerComment[]>([]);
+  const [commentText, setCommentText] = useState('');
+  const [submittingComment, setSubmittingComment] = useState(false);
 
   const categories = ['건강', '가족', '사역', '진로', '관계', '재정', '학업', '기타'];
   const priorities = ['일반', '긴급', '감사'];
@@ -69,8 +82,34 @@ export default function PrayerDetailClient({
       category: prayer.category,
       priority: prayer.priority,
       status: prayer.status,
+      allowComments: prayer.allowComments,
     });
   }, [prayer]);
+
+  useEffect(() => {
+    if (!prayer.allowComments) return;
+    const supabase = createClient();
+    supabase
+      .from('prayer_comments')
+      .select('id, content, user_id, author_name, created_at')
+      .eq('prayer_id', prayerId)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        const list =
+          data?.map((row) => ({
+            id: row.id,
+            userId: row.user_id,
+            author: row.author_name || '익명',
+            date: new Date(row.created_at).toLocaleDateString('ko-KR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }),
+            content: row.content,
+          })) ?? [];
+        setComments(list);
+      });
+  }, [prayerId, prayer.allowComments]);
 
   const handlePray = async () => {
     if (!userData) {
@@ -114,6 +153,7 @@ export default function PrayerDetailClient({
         category: editForm.category,
         priority: editForm.priority,
         status: editForm.status,
+        allow_comments: editForm.allowComments,
       })
       .eq('id', prayerId);
 
@@ -129,8 +169,61 @@ export default function PrayerDetailClient({
       category: editForm.category,
       priority: editForm.priority,
       status: editForm.status,
+      allowComments: editForm.allowComments,
     }));
     setIsEditing(false);
+  };
+
+  const handleSubmitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userData) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    if (!commentText.trim()) return;
+    setSubmittingComment(true);
+    const supabase = createClient();
+    const { error } = await supabase.from('prayer_comments').insert({
+      prayer_id: prayerId,
+      user_id: userData.id,
+      content: commentText.trim(),
+      author_name: userData.name,
+    });
+    setSubmittingComment(false);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    setCommentText('');
+    const { data } = await supabase
+      .from('prayer_comments')
+      .select('id, content, user_id, author_name, created_at')
+      .eq('prayer_id', prayerId)
+      .order('created_at', { ascending: false });
+    const list =
+      data?.map((row) => ({
+        id: row.id,
+        userId: row.user_id,
+        author: row.author_name || '익명',
+        date: new Date(row.created_at).toLocaleDateString('ko-KR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        content: row.content,
+      })) ?? [];
+    setComments(list);
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!userData) return;
+    const supabase = createClient();
+    await supabase
+      .from('prayer_comments')
+      .delete()
+      .eq('id', commentId)
+      .eq('user_id', userData.id);
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
   };
 
   const handleDeletePrayer = async () => {
@@ -188,6 +281,7 @@ export default function PrayerDetailClient({
                             category: prayer.category,
                             priority: prayer.priority,
                             status: prayer.status,
+                            allowComments: prayer.allowComments,
                           });
                         }
                         setIsEditing((v) => !v);
@@ -249,6 +343,17 @@ export default function PrayerDetailClient({
                         </option>
                       ))}
                     </select>
+                    <label className="inline-flex items-center gap-2 text-sm text-stone-600">
+                      <input
+                        type="checkbox"
+                        checked={editForm.allowComments}
+                        onChange={(e) =>
+                          setEditForm((prev) => ({ ...prev, allowComments: e.target.checked }))
+                        }
+                        className="w-4 h-4 text-stone-700 border-stone-300 rounded"
+                      />
+                      댓글 허용
+                    </label>
                   </div>
                 </div>
               ) : (
@@ -305,62 +410,67 @@ export default function PrayerDetailClient({
             </div>
           </div>
 
-          {/* Prayer Comments
-          <div className="py-14 sm:py-20 lg:py-24">
-            <p className="text-[10px] sm:text-xs font-light tracking-[0.2em] uppercase text-stone-400 mb-3 sm:mb-4">
-              Prayer Comments
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-light text-stone-900 mb-8 sm:mb-12">
-              함께 나눈 기도
-            </h2>
+          {prayer.allowComments && (
+            <div className="py-14 sm:py-20 lg:py-24">
+              <p className="text-[10px] sm:text-xs font-light tracking-[0.2em] uppercase text-stone-400 mb-3 sm:mb-4">
+                Prayer Comments
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-light text-stone-900 mb-8 sm:mb-12">
+                함께 나눈 기도
+              </h2>
 
-            <div className="space-y-8 sm:space-y-12">
-              {comments.map((comment) => (
-                <div key={comment.id} className="pb-8 sm:pb-12 border-b border-stone-100">
-                  <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                    <span className="text-sm sm:text-base font-light text-stone-900">
-                      {comment.author}
-                    </span>
-                    <span className="text-stone-300">·</span>
-                    <span className="text-xs sm:text-sm font-light text-stone-400">{comment.date}</span>
-                    {userData?.id === comment.userId && (
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteComment(comment.id)}
-                        className="ml-auto text-xs sm:text-sm font-light text-rose-600 hover:text-rose-700"
-                      >
-                        삭제
-                      </button>
-                    )}
+              <div className="space-y-8 sm:space-y-12">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="pb-8 sm:pb-12 border-b border-stone-100">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <span className="text-sm sm:text-base font-light text-stone-900">
+                        {comment.author}
+                      </span>
+                      <span className="text-stone-300">·</span>
+                      <span className="text-xs sm:text-sm font-light text-stone-400">
+                        {comment.date}
+                      </span>
+                      {userData?.id === comment.userId && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteComment(comment.id)}
+                          className="ml-auto text-xs sm:text-sm font-light text-rose-600 hover:text-rose-700"
+                        >
+                          삭제
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-sm sm:text-base font-light text-stone-600 leading-relaxed">
+                      {comment.content}
+                    </p>
                   </div>
-                  <p className="text-sm sm:text-base font-light text-stone-600 leading-relaxed">
-                    {comment.content}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            {userData && (
-              <form onSubmit={handleSubmitComment} className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-stone-200">
-                <textarea
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="기도의 마음을 나눠주세요..."
-                  className="w-full h-28 sm:h-32 px-0 py-3 sm:py-4 text-sm sm:text-base font-light text-stone-900 placeholder-stone-300 bg-transparent border-0 border-b border-stone-200 focus:border-stone-400 focus:outline-none resize-none transition-colors"
-                />
-                <div className="flex justify-end mt-4 sm:mt-6">
-                  <button
-                    type="submit"
-                    disabled={!commentText.trim() || submittingComment}
-                    className="px-5 sm:px-6 py-2 sm:py-2.5 text-sm font-light text-stone-900 bg-stone-100 hover:bg-stone-200 transition-colors whitespace-nowrap cursor-pointer disabled:opacity-50"
-                  >
-                    {submittingComment ? '등록 중...' : '기도 남기기'}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-          */}
+              {userData && (
+                <form
+                  onSubmit={handleSubmitComment}
+                  className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-stone-200"
+                >
+                  <textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="기도의 마음을 나눠주세요..."
+                    className="w-full h-28 sm:h-32 px-0 py-3 sm:py-4 text-sm sm:text-base font-light text-stone-900 placeholder-stone-300 bg-transparent border-0 border-b border-stone-200 focus:border-stone-400 focus:outline-none resize-none transition-colors"
+                  />
+                  <div className="flex justify-end mt-4 sm:mt-6">
+                    <button
+                      type="submit"
+                      disabled={!commentText.trim() || submittingComment}
+                      className="px-5 sm:px-6 py-2 sm:py-2.5 text-sm font-light text-stone-900 bg-stone-100 hover:bg-stone-200 transition-colors whitespace-nowrap cursor-pointer disabled:opacity-50"
+                    >
+                      {submittingComment ? '등록 중...' : '기도 남기기'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
         </div>
       </main>
 

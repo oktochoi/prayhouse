@@ -41,6 +41,7 @@ export default async function PrayerDetailPage({ params }: { params: Promise<{ i
     }),
     prayerCount: count || 0,
     status: prayer.status,
+    allowComments: prayer.allow_comments ?? false,
   };
 
   return (

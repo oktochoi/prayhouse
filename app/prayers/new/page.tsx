@@ -18,6 +18,7 @@ export default function NewPrayerPage() {
     category: '건강',
     priority: '일반',
     isAnonymous: false,
+    allowComments: false,
     tags: ''
   });
 
@@ -73,6 +74,7 @@ export default function NewPrayerPage() {
       status: 'active',
       is_anonymous: formData.isAnonymous,
       author_name: formData.isAnonymous ? null : userData.name,
+      allow_comments: formData.allowComments,
     });
 
     setIsSubmitting(false);
@@ -274,6 +276,21 @@ export default function NewPrayerPage() {
                   />
                   <label htmlFor="anonymous" className="ml-2 text-sm text-amber-700">
                     익명으로 등록하기
+                  </label>
+                </div>
+
+                {/* 댓글 허용 */}
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="allowComments"
+                    name="allowComments"
+                    checked={formData.allowComments}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-amber-600 bg-gray-100 border-amber-300 rounded focus:ring-amber-500"
+                  />
+                  <label htmlFor="allowComments" className="ml-2 text-sm text-amber-700">
+                    댓글 허용하기
                   </label>
                 </div>
 
