@@ -75,7 +75,8 @@ export default function MissionReportClient({ reportId }: MissionReportClientPro
     ? `₩${mission.current_support.toLocaleString()} / ₩${mission.support_goal.toLocaleString()}`
     : null;
   const isOwner = userData?.id === mission.user_id;
-  const ended = isMissionEnded(mission.end_date);
+  const isCompleted = mission.is_completed ?? false;
+  const endedByDate = isMissionEnded(mission.end_date);
 
   const handleShare = async () => {
     const shareUrl = window.location.href;
@@ -159,9 +160,15 @@ export default function MissionReportClient({ reportId }: MissionReportClientPro
                     )}
                   </div>
                 </div>
-                {ended && (
-                  <div className="inline-flex items-center px-2.5 py-1 text-[11px] tracking-wide text-stone-600 bg-stone-100 border border-stone-200 rounded-full mb-4">
-                    종료된 선교
+                {(isCompleted || endedByDate) && (
+                  <div
+                    className={`inline-flex items-center px-2.5 py-1 text-[11px] tracking-wide rounded-full mb-4 ${
+                      isCompleted
+                        ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
+                        : 'text-stone-600 bg-stone-100 border border-stone-200'
+                    }`}
+                  >
+                    {isCompleted ? '선교 완료' : '종료된 선교'}
                   </div>
                 )}
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light text-stone-800 mb-3 sm:mb-4 tracking-wide leading-tight">

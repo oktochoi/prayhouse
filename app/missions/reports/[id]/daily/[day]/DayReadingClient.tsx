@@ -25,7 +25,12 @@ export default function DayReadingClient({ params }: DayReadingClientProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const reportId = params?.id || '';
   const currentDay = parseInt(params?.day || '1', 10);
-  const [mission, setMission] = useState<{ id: string; title: string; end_date?: string } | null>(null);
+  const [mission, setMission] = useState<{
+    id: string;
+    title: string;
+    end_date?: string;
+    is_completed?: boolean;
+  } | null>(null);
   const [entry, setEntry] = useState<{
     day: number;
     date: string;
@@ -50,7 +55,9 @@ export default function DayReadingClient({ params }: DayReadingClientProps) {
       getDailyEntryByDay(reportId, currentDay),
       getDailyEntries(reportId),
     ]).then(([m, e, entries]) => {
-      setMission(m ? { id: m.id, title: m.title, end_date: m.end_date } : null);
+      setMission(
+        m ? { id: m.id, title: m.title, end_date: m.end_date, is_completed: m.is_completed } : null
+      );
       setEntry(e ? { ...e, date: formatDateKr(e.date) } : null);
       setAllDays(entries.map((x) => x.day).sort((a, b) => a - b));
       setLoading(false);
@@ -123,9 +130,16 @@ export default function DayReadingClient({ params }: DayReadingClientProps) {
                 {mission?.title && (
                   <div className="flex items-center gap-3 text-sm text-stone-500">
                     <span>{mission.title}</span>
-                    {mission.end_date && isMissionEnded(mission.end_date) && (
-                      <span className="text-[11px] tracking-wide text-stone-600 bg-stone-100 border border-stone-200 rounded-full px-2 py-0.5">
-                        종료된 선교
+                    {((mission.is_completed ?? false) ||
+                      (mission.end_date && isMissionEnded(mission.end_date))) && (
+                      <span
+                        className={`text-[11px] tracking-wide rounded-full px-2 py-0.5 ${
+                          mission.is_completed
+                            ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
+                            : 'text-stone-600 bg-stone-100 border border-stone-200'
+                        }`}
+                      >
+                        {mission.is_completed ? '선교 완료' : '종료된 선교'}
                       </span>
                     )}
                   </div>

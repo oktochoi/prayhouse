@@ -382,9 +382,15 @@ export default function MissionDailyReportClient({ params }: MissionDailyReportC
             <div className="mt-3 space-y-1 text-base text-stone-500">
               <p>{missionReport.region} • {missionReport.country}</p>
               <p>{missionReport.start_date} ~ {missionReport.end_date}</p>
-              {isMissionEnded(missionReport.end_date) && (
-                <span className="inline-block text-xs tracking-wide text-stone-600 bg-stone-100 border border-stone-200 rounded-full px-2.5 py-1 mt-2">
-                  종료된 선교
+              {((missionReport.is_completed ?? false) || isMissionEnded(missionReport.end_date)) && (
+                <span
+                  className={`inline-block text-xs tracking-wide rounded-full px-2.5 py-1 mt-2 ${
+                    missionReport.is_completed
+                      ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
+                      : 'text-stone-600 bg-stone-100 border border-stone-200'
+                  }`}
+                >
+                  {missionReport.is_completed ? '선교 완료' : '종료된 선교'}
                 </span>
               )}
             </div>

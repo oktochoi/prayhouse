@@ -443,7 +443,8 @@ export default function ProfilePage() {
                         {prayer.title}
                       </h3>
                       {prayer.status === 'answered' && (
-                        <span className="ml-4 text-xs font-light tracking-wide text-stone-400 bg-stone-50 px-3 py-1 whitespace-nowrap">
+                        <span className="ml-4 text-xs font-medium tracking-wide text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full whitespace-nowrap flex items-center gap-1">
+                          <i className="ri-check-line"></i>
                           응답됨
                         </span>
                       )}

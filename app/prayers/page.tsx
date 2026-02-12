@@ -184,9 +184,17 @@ function PrayersPageContent() {
             </div>
           ) : (
             <div className="space-y-4 sm:space-y-6 pb-20 sm:pb-32">
-              {filtered.map((prayer) => (
+              {filtered.map((prayer) => {
+                const answered = prayer.status === 'answered';
+                return (
                 <Link key={prayer.id} href={`/prayers/${prayer.id}`} className="block group">
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border border-amber-100/60 hover:border-amber-200 hover:shadow-lg hover:shadow-amber-100/50 transition-all duration-300">
+                  <div
+                    className={`rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 border transition-all duration-300 ${
+                      answered
+                        ? 'bg-emerald-50/80 backdrop-blur-sm border-emerald-100 hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/40'
+                        : 'bg-white/80 backdrop-blur-sm border-amber-100/60 hover:border-amber-200 hover:shadow-lg hover:shadow-amber-100/50'
+                    }`}
+                  >
                     <div className="flex items-start justify-between mb-2 sm:mb-3">
                       <div className="flex-1 pr-3">
                         <h3 className="text-lg sm:text-xl lg:text-2xl font-light text-stone-800 mb-1.5 sm:mb-2 group-hover:text-amber-700 transition-colors">
@@ -196,8 +204,9 @@ function PrayersPageContent() {
                           {prayer.excerpt}
                         </p>
                       </div>
-                      {prayer.status === 'answered' && (
-                        <span className="text-[10px] sm:text-xs font-medium tracking-wide text-amber-700 bg-amber-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full whitespace-nowrap flex-shrink-0">
+                      {answered && (
+                        <span className="text-[10px] sm:text-xs font-medium tracking-wide text-emerald-700 bg-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full whitespace-nowrap flex-shrink-0 flex items-center gap-1">
+                          <i className="ri-check-line"></i>
                           응답됨
                         </span>
                       )}
@@ -220,7 +229,8 @@ function PrayersPageContent() {
                     </div>
                   </div>
                 </Link>
-              ))}
+              );
+              })}
             </div>
           )}
         </div>

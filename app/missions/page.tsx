@@ -128,10 +128,15 @@ export default function MissionsPage() {
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
-                          <div className="absolute top-4 left-4 flex items-center gap-2">
+                          <div className="absolute top-4 left-4 flex items-center gap-2 flex-wrap">
                             <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-stone-700">
                               {mission.country}
                             </span>
+                            {mission.is_completed && (
+                              <span className="px-3 py-1 bg-emerald-500/90 backdrop-blur-sm rounded-full text-xs font-medium text-white">
+                                선교 완료
+                              </span>
+                            )}
                             {mission.priority === '긴급' && (
                               <span className="px-3 py-1 bg-red-500 rounded-full text-xs font-medium text-white animate-pulse">
                                 긴급

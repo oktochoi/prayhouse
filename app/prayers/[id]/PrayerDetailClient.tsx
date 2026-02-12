@@ -54,14 +54,12 @@ export default function PrayerDetailClient({
   });
   const [comments, setComments] = useState<PrayerComment[]>([]);
   const [commentText, setCommentText] = useState('');
+  const [commentAnonymous, setCommentAnonymous] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
 
   const categories = ['건강', '가족', '사역', '진로', '관계', '재정', '학업', '기타'];
   const priorities = ['일반', '긴급', '감사'];
-  const statuses = [
-    { value: 'active', label: '진행 중' },
-    { value: 'answered', label: '응답됨' },
-  ];
+  const isAnswered = prayer.status === 'answered';
 
   useEffect(() => {
     if (!userData) return;
@@ -138,6 +136,21 @@ export default function PrayerDetailClient({
 
   const isOwner = userData?.id === prayer.userId;
 
+  const handleMarkAnswered = async () => {
+    if (!isOwner || !userData) return;
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('prayers')
+      .update({ status: 'answered' })
+      .eq('id', prayerId);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    setPrayer((prev) => ({ ...prev, status: 'answered' }));
+    setEditForm((prev) => ({ ...prev, status: 'answered' }));
+  };
+
   const handleUpdatePrayer = async () => {
     if (!isOwner) return;
     if (!editForm.title.trim() || !editForm.content.trim()) {
@@ -187,7 +200,7 @@ export default function PrayerDetailClient({
       prayer_id: prayerId,
       user_id: userData.id,
       content: commentText.trim(),
-      author_name: userData.name,
+      author_name: commentAnonymous ? null : userData.name,
     });
     setSubmittingComment(false);
     if (error) {
@@ -261,16 +274,25 @@ export default function PrayerDetailClient({
                 <span className="text-[10px] sm:text-xs font-light tracking-[0.2em] uppercase text-stone-400">
                   {prayer.priority}
                 </span>
-                {prayer.status === 'answered' && (
+                {isAnswered && (
                   <>
                     <span className="text-stone-300">·</span>
-                    <span className="text-[10px] sm:text-xs font-light tracking-wide text-stone-400 bg-stone-50 px-2 sm:px-3 py-1">
-                      응답됨
+                    <span className="text-[10px] sm:text-xs font-medium tracking-wide text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 sm:px-3 py-1 rounded-full">
+                      ✅ 응답됨
                     </span>
                   </>
                 )}
                 {isOwner && (
                   <div className="ml-auto flex items-center gap-2">
+                    {!isAnswered && (
+                      <button
+                        type="button"
+                        onClick={handleMarkAnswered}
+                        className="px-3 py-1.5 text-xs font-light text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+                      >
+                        응답됨
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {
@@ -332,17 +354,6 @@ export default function PrayerDetailClient({
                         </option>
                       ))}
                     </select>
-                    <select
-                      value={editForm.status}
-                      onChange={(e) => setEditForm((prev) => ({ ...prev, status: e.target.value }))}
-                      className="px-3 py-2 text-sm border border-stone-200 rounded-md"
-                    >
-                      {statuses.map((s) => (
-                        <option key={s.value} value={s.value}>
-                          {s.label}
-                        </option>
-                      ))}
-                    </select>
                     <label className="inline-flex items-center gap-2 text-sm text-stone-600">
                       <input
                         type="checkbox"
@@ -371,7 +382,18 @@ export default function PrayerDetailClient({
 
             <div className="h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent my-8 sm:my-12" />
 
-            <div className="prose prose-base sm:prose-lg max-w-none mb-12 sm:mb-16">
+            {isAnswered && (
+              <div className="mb-8 sm:mb-10 p-4 sm:p-6 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center gap-3">
+                <span className="text-2xl">✅</span>
+                <p className="text-base sm:text-lg font-medium text-emerald-800">응답된 기도입니다</p>
+              </div>
+            )}
+
+            <div
+              className={`prose prose-base sm:prose-lg max-w-none mb-12 sm:mb-16 rounded-xl p-6 sm:p-8 ${
+                isAnswered ? 'bg-emerald-50/50 border border-emerald-100' : ''
+              }`}
+            >
               {isEditing ? (
                 <div className="space-y-4">
                   <textarea
@@ -458,7 +480,17 @@ export default function PrayerDetailClient({
                     placeholder="기도의 마음을 나눠주세요..."
                     className="w-full h-28 sm:h-32 px-0 py-3 sm:py-4 text-sm sm:text-base font-light text-stone-900 placeholder-stone-300 bg-transparent border-0 border-b border-stone-200 focus:border-stone-400 focus:outline-none resize-none transition-colors"
                   />
-                  <div className="flex justify-end mt-4 sm:mt-6">
+                  <div className="flex items-center justify-between mt-4 sm:mt-6">
+                    <label className="inline-flex items-center gap-2 text-sm text-stone-500 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={commentAnonymous}
+                        onChange={(e) => setCommentAnonymous(e.target.checked)}
+                        className="w-4 h-4 text-stone-600 border-stone-300 rounded"
+                      />
+                      익명으로 작성
+                    </label>
+                    <div>
                     <button
                       type="submit"
                       disabled={!commentText.trim() || submittingComment}
@@ -466,6 +498,7 @@ export default function PrayerDetailClient({
                     >
                       {submittingComment ? '등록 중...' : '기도 남기기'}
                     </button>
+                    </div>
                   </div>
                 </form>
               )}

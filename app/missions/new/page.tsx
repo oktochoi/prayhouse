@@ -53,6 +53,7 @@ function NewMissionReportPageContent() {
     accountBank: '',
     accountNumber: '',
     accountHolder: '',
+    isCompleted: false,
   });
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -120,6 +121,7 @@ function NewMissionReportPageContent() {
         accountBank: mission.account_bank || '',
         accountNumber: mission.account_number || '',
         accountHolder: mission.account_holder || '',
+        isCompleted: mission.is_completed ?? false,
         imageFiles: [],
         imagePreviews: imageUrls,
       }));
@@ -231,6 +233,8 @@ function NewMissionReportPageContent() {
             account_bank: reportForm.needsSupport ? reportForm.accountBank : null,
             account_number: reportForm.needsSupport ? reportForm.accountNumber : null,
             account_holder: reportForm.needsSupport ? reportForm.accountHolder : null,
+            is_completed: reportForm.isCompleted,
+            completed_at: reportForm.isCompleted ? new Date().toISOString() : null,
           })
           .eq('id', editId);
         if (missionError) {
@@ -260,6 +264,8 @@ function NewMissionReportPageContent() {
             account_bank: reportForm.needsSupport ? reportForm.accountBank : null,
             account_number: reportForm.needsSupport ? reportForm.accountNumber : null,
             account_holder: reportForm.needsSupport ? reportForm.accountHolder : null,
+            is_completed: reportForm.isCompleted,
+            completed_at: reportForm.isCompleted ? new Date().toISOString() : null,
           })
           .select('id')
           .single();
@@ -891,6 +897,21 @@ function NewMissionReportPageContent() {
                       className="w-5 h-5 text-amber-600 bg-gray-100 border-gray-300 rounded focus:ring-amber-500 mr-3"
                     />
                     <span className="text-amber-700 font-medium">익명으로 작성하기</span>
+                  </label>
+                </div>
+
+                {/* 선교 완료 */}
+                <div className="flex items-center">
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={reportForm.isCompleted}
+                      onChange={(e) =>
+                        setReportForm({ ...reportForm, isCompleted: e.target.checked })
+                      }
+                      className="w-5 h-5 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 mr-3"
+                    />
+                    <span className="text-emerald-700 font-medium">선교 완료</span>
                   </label>
                 </div>
 

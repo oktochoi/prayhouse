@@ -14,6 +14,7 @@ type PrayerItem = {
   date: string;
   prayerCount: number;
   isUrgent: boolean;
+  status: string;
 };
 
 const categories = ['전체', '건강', '가족', '학업', '직장', '교회', '사역', '진로', '관계', '재정', '기타'];
@@ -33,7 +34,7 @@ export default function PrayerSection() {
       const supabase = createClient();
       const { data: prayersData } = await supabase
         .from('prayers')
-        .select('id, title, content, category, priority, author_name, is_anonymous, created_at')
+        .select('id, title, content, category, priority, status, author_name, is_anonymous, created_at')
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -63,6 +64,7 @@ export default function PrayerSection() {
         date: formatDateKr(p.created_at),
         prayerCount: countMap[p.id] || 0,
         isUrgent: p.priority === '긴급',
+        status: p.status || 'active',
       }));
 
       setPrayers(items);
@@ -124,13 +126,27 @@ export default function PrayerSection() {
           </div>
         ) : (
           <div className="space-y-4 sm:space-y-5">
-            {filtered.slice(0, 4).map((prayer, index) => (
+            {filtered.slice(0, 4).map((prayer, index) => {
+              const answered = prayer.status === 'answered';
+              return (
               <AnimatedSection key={prayer.id} delay={150 + index * 80}>
-                <article className="group bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 shadow-sm hover:shadow-xl hover:shadow-stone-200/50 hover:-translate-y-0.5 transition-all duration-300 border border-stone-100/80">
+                <article
+                  className={`group rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border ${
+                    answered
+                      ? 'bg-emerald-50/80 border-emerald-100 hover:shadow-emerald-100/40'
+                      : 'bg-white border-stone-100/80 hover:shadow-stone-200/50'
+                  }`}
+                >
                   <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                     <span className="px-3 py-1 bg-stone-100 text-stone-600 text-[10px] sm:text-xs font-medium rounded-full">
                       {prayer.category}
                     </span>
+                    {answered && (
+                      <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-medium rounded-full flex items-center gap-1">
+                        <i className="ri-check-line"></i>
+                        응답됨
+                      </span>
+                    )}
                     {prayer.isUrgent && (
                       <span className="px-3 py-1 bg-rose-50 text-rose-600 text-[10px] sm:text-xs font-medium rounded-full">
                         긴급
@@ -170,7 +186,8 @@ export default function PrayerSection() {
                   </div>
                 </article>
               </AnimatedSection>
-            ))}
+            );
+            })}
           </div>
         )}
 

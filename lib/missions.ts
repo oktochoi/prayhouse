@@ -28,6 +28,8 @@ export type Mission = {
   account_bank: string | null;
   account_number: string | null;
   account_holder: string | null;
+  is_completed: boolean;
+  completed_at: string | null;
   created_at: string;
   images?: { url: string }[];
   days?: number;
