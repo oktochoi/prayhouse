@@ -407,7 +407,7 @@ export default function MyGratitudePage() {
 
             {myEntry ? (
               <div className="bg-white/80 rounded-2xl border border-stone-100 p-6 sm:p-8">
-                <p className="font-lora text-base sm:text-lg text-stone-700 leading-relaxed mb-6">
+                <p className="font-serif-kr text-base sm:text-lg text-stone-700 leading-relaxed mb-6">
                   {myEntry.text}
                 </p>
                 {myEntry.linked_prayer_id && (
@@ -449,7 +449,7 @@ export default function MyGratitudePage() {
                   value={formText}
                   onChange={(e) => setFormText(e.target.value.slice(0, getCharLimit()))}
                   placeholder="오늘 하루, 하나님께 감사할 한 가지를 기록해보세요."
-                  className="w-full min-h-[120px] px-0 py-0 text-base sm:text-lg font-light text-stone-700 placeholder-stone-400 bg-transparent border-0 resize-none focus:outline-none leading-relaxed font-lora"
+                  className="w-full min-h-[120px] px-0 py-0 text-base sm:text-lg font-light text-stone-700 placeholder-stone-400 bg-transparent border-0 resize-none focus:outline-none leading-relaxed font-serif-kr"
                 />
                 <div className="flex justify-between items-center mt-4 text-xs text-stone-400">
                   <span>

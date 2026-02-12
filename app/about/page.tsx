@@ -53,7 +53,7 @@ export default function AboutPage() {
                   소개
                 </h1>
                 <p className="text-lg sm:text-xl font-light text-stone-600 leading-relaxed max-w-xl">
-                  함께 기도하고 성장하며, 보냄 받은 자리에서 복음을 살아내는 공동체입니다
+                  함께 기도하고 성장하며,<br />보냄 받은 자리에서 복음을 살아내는 공동체입니다
                 </p>
               </AnimatedSection>
 
@@ -89,11 +89,11 @@ export default function AboutPage() {
                     우리는 하나님의 사랑 안에서 서로를 격려하고 지지하는 신앙 공동체입니다.
                   </p>
                   <p>
-                    기도를 통해 하나님과 깊이 교제하고, 말씀으로 서로를 세우며,
+                    기도를 통해 하나님과 깊이 교제하고, 말씀으로 서로를 세우며,<br/>
                     보냄 받은 자리에서 복음을 살아내는 것이 우리의 사명입니다.
                   </p>
                   <p>
-                    모든 사람이 하나님의 사랑을 경험하고,
+                    모든 사람이 하나님의 사랑을 경험하고,<br/>
                     그 사랑 안에서 자유롭게 성장할 수 있는 공간을 만들어가고 있습니다.
                   </p>
                 </div>

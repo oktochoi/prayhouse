@@ -2,12 +2,19 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import LoginModal from '@/components/LoginModal';
-import RichTextEditor from '@/components/RichTextEditor';
+
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-[160px] rounded-xl border border-stone-200 bg-stone-50 animate-pulse" />
+  ),
+});
 import { useAuth } from '@/components/AuthProvider';
 import { requireLogin } from '@/lib/auth';
 import { createClient } from '@/utils/supabase/client';

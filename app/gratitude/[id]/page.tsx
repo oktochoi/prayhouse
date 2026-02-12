@@ -62,7 +62,7 @@ export default async function GratitudeDetailPage({ params }: PageProps) {
             <p className="text-xs text-stone-400">{formatDisplayDate(data.date)}</p>
           </div>
           <article className="bg-white/80 rounded-2xl border border-stone-100 p-6 sm:p-8">
-            <p className="font-lora text-base sm:text-lg text-stone-700 leading-relaxed">
+            <p className="font-serif-kr text-base sm:text-lg text-stone-700 leading-relaxed">
               {data.text}
             </p>
           </article>

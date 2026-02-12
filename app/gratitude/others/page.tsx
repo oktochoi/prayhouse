@@ -80,7 +80,7 @@ export default function OthersGratitudePage() {
                   href={`/gratitude/${entry.id}`}
                   className="block bg-white/80 rounded-2xl border border-stone-100 p-6 sm:p-8 hover:border-amber-100 hover:shadow-sm transition-all"
                 >
-                  <p className="font-lora text-base sm:text-lg text-stone-700 leading-relaxed mb-6">
+                  <p className="font-serif-kr text-base sm:text-lg text-stone-700 leading-relaxed mb-6">
                     {entry.text}
                   </p>
                   <div className="flex items-center justify-between">

@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Pacifico, Lora, Noto_Serif_KR } from "next/font/google";
+import { Geist, Pacifico, Noto_Serif_KR } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-
-const lora = Lora({
-  weight: ['400', '500', '600'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-lora',
-});
 
 const notoSerifKr = Noto_Serif_KR({
   weight: ['400', '500', '600'],
@@ -27,11 +20,6 @@ const pacifico = Pacifico({
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -59,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} ${lora.variable} ${notoSerifKr.variable} antialiased`}
+        className={`${geistSans.variable} ${pacifico.variable} ${notoSerifKr.variable} antialiased`}
       >
         <AuthProvider>
           <div
